@@ -1,5 +1,5 @@
 import cleanup from 'rollup-plugin-cleanup';
-import { terser } from 'rollup-plugin-terser';
+import { terser } from '@rollup/plugin-terser';
 import { getBabelOutputPlugin } from '@rollup/plugin-babel';
 import { importAssertionsPlugin } from 'rollup-plugin-import-assert';
 import { importAssertions } from 'acorn-import-assertions';

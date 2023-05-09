@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import almostEqual from 'almost-equal';
-import solver from '../src/lambert.js';
+import { solver } from '../src/lambert.js';
 
 const absTol = 0.01;
 const relTol = 0.001;

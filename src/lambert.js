@@ -24,7 +24,7 @@ import * as cephes from 'cephes';
  * @param {number} atol Absolute tolerance.
  * @param {number} rtol Relative tolerance.
  */
-const solver = async (
+export const solver = async (
     mu,
     r1,
     r2,
@@ -307,7 +307,7 @@ const _householder = (p0, T0, ll, M, atol, rtol, maxiter) => {
   throw new Error('Failed to converge');
 };
 
-async function multiSolver(mu, r1, r2, tof, vi1, vi2, progradeOptions = [true, false], lowpathOptions = [true]) {
+export async function multiSolver(mu, r1, r2, tof, vi1, vi2, progradeOptions = [true, false], lowpathOptions = [true]) {
   let minDeltaV = null;
   let bestSolutionV1;
   let bestSolutionV2;

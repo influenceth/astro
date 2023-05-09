@@ -1,5 +1,7 @@
 import { modulo } from './utils.js';
 
+// See: https://github.com/poliastro/poliastro/blob/main/src/poliastro/core/angles.py
+
 // Converts eccentric anomaly to mean anomaly
 export const E_to_M = (E, ecc) => {
   return E - ecc * Math.sin(E);
@@ -73,13 +75,43 @@ export const nu_to_F = (nu, ecc) => {
 }
 
 // Converts mean anomaly to true anomaly
-export const M_to_nu = (M, ecc) => {
-  if (ecc < 1) {
-    // Shift mean anomaly into range of -pi to pi
+export const M_to_nu = (M, ecc, delta = 1e-2) => {
+  if (ecc < 1 - delta) {
+    // Eccentric
     M = modulo((M + Math.PI), (2 * Math.PI)) - Math.PI;
     return E_to_nu(M_to_E(M, ecc), ecc);
+  } else if (ecc < 1) {
+    // Near parabolic low
+    return D_to_nu(M_to_D_near_parabolic(M, ecc));
+  } else if (ecc == 1) {
+    // Parabolic
+    return D_to_nu(M_to_D(M));
+  } else if (ecc < 1 + delta) {
+    // Near parabolic high
+    return D_to_nu(M_to_D_near_parabolic(M, ecc));
   } else {
+    // Hyperbolic
     return F_to_nu(M_to_F(M, ecc), ecc);
+  }
+}
+
+// Converts true anomaly to mean anomaly
+export const nu_to_M = (nu, ecc, delta = 1e-2) => {
+  if (ecc < 1 - delta) {
+    // Elliptic
+    return E_to_M(nu_to_E(nu, ecc), ecc);
+  } else if (ecc < 1) {
+    // Near parabolic low
+    return D_to_M_near_parabolic(nu_to_D(nu), ecc);
+  } else if (ecc == 1) {
+    // Parabolic
+    return D_to_M(nu_to_D(nu));
+  } else if (ecc < 1 + delta) {
+    // Near parabolic high
+    return D_to_M_near_parabolic(nu_to_D(nu), ecc);
+  } else {
+    // Hyperbolic
+    return F_to_M(nu_to_F(nu, ecc), ecc);
   }
 }
 
@@ -178,6 +210,7 @@ export default {
   F_to_nu,
   nu_to_F,
   M_to_nu,
+  nu_to_M,
   D_to_M,
   M_to_D,
   D_to_nu,

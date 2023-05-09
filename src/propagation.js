@@ -17,6 +17,8 @@ import {
   F_to_nu
 } from './angles.js';
 
+// See: https://github.com/poliastro/poliastro/blob/main/src/poliastro/core/propagation/farnocchia.py
+
 /**
  * Propagates an orbit using mean motion and returns new position and velocity vectors
  *
@@ -64,7 +66,6 @@ export const farnocchia_coe = (mu, p, ecc, inc, raan, argp, nu, tof) => {
 export const delta_t_from_nu = (nu, ecc, mu = 1, q = 1, delta = 1e-2) => {
   if (ecc < 0) throw new Error('ecc must be in [0, ∞)');
   if ( nu >= Math.PI || nu < -Math.PI ) throw new Error('nu must be in [-pi, pi)');
-
   let M, n;
 
   if (ecc < 1 - delta) {
@@ -72,7 +73,7 @@ export const delta_t_from_nu = (nu, ecc, mu = 1, q = 1, delta = 1e-2) => {
     const E = nu_to_E(nu, ecc); // (-pi, pi]
     M = E_to_M(E, ecc); // (-pi, pi]
     n = Math.sqrt(mu * (1 - ecc) ** 3 / q ** 3);
-  } else if (1 - delta <= ecc && ecc < 1) {
+  } else if (ecc < 1) {
     const E = nu_to_E(nu, ecc); // (-pi, pi]
 
     if (delta <= 1 - ecc * Math.cos(E)) {
@@ -97,7 +98,7 @@ export const delta_t_from_nu = (nu, ecc, mu = 1, q = 1, delta = 1e-2) => {
   } else if (1 + ecc * Math.cos(nu) < 0) {
     // Unfeasible region
     return NaN;
-  } else if (1 < ecc && ecc <= 1 + delta) {
+  } else if (ecc <= 1 + delta) {
     // NOTE: Do we need to wrap nu here?
     // For hyperbolic orbits, it should anyway be in
     // (-arccos(-1 / ecc), +arccos(-1 / ecc))
@@ -113,7 +114,7 @@ export const delta_t_from_nu = (nu, ecc, mu = 1, q = 1, delta = 1e-2) => {
       M = D_to_M_near_parabolic(D, ecc); // (-∞, ∞)
       n = Math.sqrt(mu / (2 * q ** 3));
     }
-  } else if (1 + delta < ecc) {
+  } else {
     // Strong hyperbolic
     const F = nu_to_F(nu, ecc); // (-∞, ∞)
     M = F_to_M(F, ecc); // (-∞, ∞)
@@ -143,18 +144,15 @@ export const nu_from_delta_t = (delta_t, ecc, mu = 1, q = 1, delta = 1e-2) => {
     // so we wrap the true anomaly
     const E = M_to_E(modulo((M + Math.PI), (2 * Math.PI)) - Math.PI, ecc);
     nu = E_to_nu(E, ecc);
-  } else if (1 - delta <= ecc && ecc < 1) {
+  } else if (ecc < 1) {
     const E_delta = Math.acos((1 - delta) / ecc);
-    // We compute M assuming we are in the strong elliptic case
-    // and verify later
+    // Compute M assuming we are in the strong elliptic case and verify later
     const n = Math.sqrt(mu * (1 - ecc) ** 3 / q ** 3);
     const M = n * delta_t;
 
-    // We check against abs(M) because E_delta could also be negative
+    // Check against abs(M) because E_delta could also be negative
     if (E_to_M(E_delta, ecc) <= abs(M)) {
-      // Strong elliptic, proceed
-      // This might represent several revolutions,
-      // so we wrap the true anomaly
+      // Strong elliptic. This might represent several revolutions, so wrap the true anomaly
       const E = M_to_E(modulo((M + Math.PI), (2 * Math.PI)) - Math.PI, ecc);
       nu = E_to_nu(E, ecc);
     } else {
@@ -170,14 +168,13 @@ export const nu_from_delta_t = (delta_t, ecc, mu = 1, q = 1, delta = 1e-2) => {
     const M = n * delta_t;
     const D = M_to_D(M);
     nu = D_to_nu(D);
-  } else if (1 < ecc && ecc <= 1 + delta) {
+  } else if (ecc <= 1 + delta) {
     const F_delta = Math.acosh((1 + delta) / ecc);
-    // We compute M assuming we are in the strong hyperbolic case
-    // and verify later
+    // Compute M assuming we are in the strong hyperbolic case and verify later
     const n = Math.sqrt(mu * (ecc - 1) ** 3 / q ** 3);
     const M = n * delta_t;
 
-    // We check against abs(M) because F_delta could also be negative
+    // Check against abs(M) because F_delta could also be negative
     if (F_to_M(F_delta, ecc) <= abs(M)) {
       // Strong hyperbolic, proceed
       const F = M_to_F(M, ecc);

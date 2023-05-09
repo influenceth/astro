@@ -2,6 +2,8 @@ import * as math from 'mathjs';
 import { E_to_nu, F_to_nu } from '../src/angles.js';
 import { modulo, rotation_matrix } from '../src/utils.js';
 
+// See: https://github.com/poliastro/poliastro/blob/main/src/poliastro/core/elements.py
+
 /**
  * Converts from classical orbital elements to state vectors
  *

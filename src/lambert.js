@@ -134,7 +134,7 @@ const _findXY = (ll, T, M, maxiter, atol, rtol, low_path) => {
   // For abs(ll) == 1 the derivative is not continuous
   if (Math.abs(ll) >= 1) throw new Error('Derivative is not continuous');
 
-  const M_max = Math.floor(T / Math.PI);
+  let M_max = Math.floor(T / Math.PI);
   const T_00 = Math.acos(ll) + ll * Math.sqrt(1 - Math.pow(ll, 2)) // T_xM
 
   // Refine maximum number of revolutions if necessary

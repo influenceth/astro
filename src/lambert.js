@@ -307,4 +307,37 @@ const _householder = (p0, T0, ll, M, atol, rtol, maxiter) => {
   throw new Error('Failed to converge');
 };
 
-export default solver;
+async function multiSolver(mu, r1, r2, tof, vi1, vi2, progradeOptions = [true, false], lowpathOptions = [true]) {
+  let minDeltaV = null;
+  let bestSolutionV1;
+  let bestSolutionV2;
+
+  for (let prograde of progradeOptions) {
+
+    // low_path / high_path is only relevant for multi-revolution solutions
+    for (let low_path of lowpathOptions) {
+      try {
+        const [vf1, vf2] = await solver(mu, r1, r2, tof, 0, prograde, low_path);
+        const deltaV = math.norm(math.subtract(vi1, vf1)) + math.norm(math.subtract(vi2, vf2));
+        if (minDeltaV === null || deltaV < minDeltaV) {
+          minDeltaV = deltaV;
+          bestSolutionV1 = vf1;
+          bestSolutionV2 = vf2;
+        }
+      } catch (e) {
+        console.warn(e);
+      }
+    }
+  }
+
+  return {
+    v1: bestSolutionV1,
+    v2: bestSolutionV2,
+    deltaV: minDeltaV
+  };
+};
+
+export default {
+  solver,
+  multiSolver
+};

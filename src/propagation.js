@@ -151,7 +151,7 @@ export const nu_from_delta_t = (delta_t, ecc, mu = 1, q = 1, delta = 1e-2) => {
     const M = n * delta_t;
 
     // Check against abs(M) because E_delta could also be negative
-    if (E_to_M(E_delta, ecc) <= abs(M)) {
+    if (E_to_M(E_delta, ecc) <= Math.abs(M)) {
       // Strong elliptic. This might represent several revolutions, so wrap the true anomaly
       const E = M_to_E(modulo((M + Math.PI), (2 * Math.PI)) - Math.PI, ecc);
       nu = E_to_nu(E, ecc);
@@ -175,7 +175,7 @@ export const nu_from_delta_t = (delta_t, ecc, mu = 1, q = 1, delta = 1e-2) => {
     const M = n * delta_t;
 
     // Check against abs(M) because F_delta could also be negative
-    if (F_to_M(F_delta, ecc) <= abs(M)) {
+    if (F_to_M(F_delta, ecc) <= Math.abs(M)) {
       // Strong hyperbolic, proceed
       const F = M_to_F(M, ecc);
       nu = F_to_nu(F, ecc);

@@ -150,8 +150,8 @@ export const M_to_D_near_parabolic = (M, ecc) => {
 
 // Converts mean anomaly to parabolic anomaly
 export const M_to_D = (M) => {
-  B = 3 * M / 2;
-  A = (B + (1 + B ** 2) ** 0.5) ** (2 / 3);
+  const B = 3 * M / 2;
+  const A = (B + (1 + B ** 2) ** 0.5) ** (2 / 3);
   return 2 * A * B / (1 + A + A ** 2);
 }
 

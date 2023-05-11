@@ -8,7 +8,7 @@ import { modulo, rotation_matrix } from '../src/utils.js';
  * Converts from classical orbital elements to state vectors
  *
  * @param mu Standard gravitational parameter (km^3 / s^2)
- * @param p Semi latus rectum or parameter
+ * @param p Semi latus rectum or parameter (km)
  * @param ecc Eccentricity
  * @param inc Inclination (rad)
  * @param raan Longitude of ascending node (rad)

@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+import almostEqual from 'almost-equal';
 import angles from '../src/angles.js';
 
 describe('Angle conversions', function () {
@@ -44,5 +45,10 @@ describe('Angle conversions', function () {
     // Hyperbolic
     expect(angles.M_to_nu(27, 2.5).toFixed(7)).to.equal('1.9053011');
     expect(angles.M_to_nu(-14, 5.5).toFixed(7)).to.equal('-1.4133834');
+  });
+
+  it('should calculate M from D when near parabolic', function () {
+    expect(almostEqual(angles.D_to_M_near_parabolic(0.5, 0.995), 0.542104676492085, 0, 1e-7)).to.be.true;
+    expect(almostEqual(angles.D_to_M_near_parabolic(0.5, 1.005), 0.5412296752578174, 0, 1e-7)).to.be.true;
   });
 });

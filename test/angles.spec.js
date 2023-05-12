@@ -51,4 +51,8 @@ describe('Angle conversions', function () {
     expect(almostEqual(angles.D_to_M_near_parabolic(0.5, 0.995), 0.542104676492085, 0, 1e-7)).to.be.true;
     expect(almostEqual(angles.D_to_M_near_parabolic(0.5, 1.005), 0.5412296752578174, 0, 1e-7)).to.be.true;
   });
+
+  it('should convert true anomaly to hyperbolic eccentric anomaly', function () {
+    expect(almostEqual(angles.nu_to_F(-1.7, 1.5), -1.1229685286436308, 0, 1e-7)).to.be.true;
+  });
 });

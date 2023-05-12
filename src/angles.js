@@ -71,7 +71,7 @@ export const F_to_nu = (F, ecc) => {
 
 // Converts true anomaly to hyperbolic eccentric anomaly
 export const nu_to_F = (nu, ecc) => {
-  return Math.acosh((ecc + Math.cos(nu)) / (1 + ecc * Math.cos(nu)));
+  return 2 * Math.atanh(Math.sqrt((ecc - 1) / (ecc + 1)) * Math.tan(nu / 2));
 }
 
 // Converts mean anomaly to true anomaly

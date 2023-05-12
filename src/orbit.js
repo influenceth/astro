@@ -123,9 +123,10 @@ class Orbit {
    * @returns {number[]{}} Array of position vectors (km / s & km)
    */
   ephem(samples = 100, tof = null, start = null) {
+    if (!tof && this.ecc >= 1) throw new Error('tof must be specified for non elliptical orbits');
     if (!tof) tof = this.period;
     if (!start) start = this.epoch;
-    const end = start + tof;
+
     const dt = tof / samples;
     const times = Array.from({ length: samples }, (_, i) => start + i * dt);
     return times.map(t => this.sampleAtEpoch(t));

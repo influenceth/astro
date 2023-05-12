@@ -77,7 +77,7 @@ export const nu_to_F = (nu, ecc) => {
 // Converts mean anomaly to true anomaly
 export const M_to_nu = (M, ecc, delta = 1e-2) => {
   if (ecc < 1 - delta) {
-    // Eccentric
+    // Elliptical
     M = modulo((M + Math.PI), (2 * Math.PI)) - Math.PI;
     return E_to_nu(M_to_E(M, ecc), ecc);
   } else if (ecc < 1) {
@@ -98,7 +98,7 @@ export const M_to_nu = (M, ecc, delta = 1e-2) => {
 // Converts true anomaly to mean anomaly
 export const nu_to_M = (nu, ecc, delta = 1e-2) => {
   if (ecc < 1 - delta) {
-    // Elliptic
+    // Elliptical
     return E_to_M(nu_to_E(nu, ecc), ecc);
   } else if (ecc < 1) {
     // Near parabolic low
@@ -168,7 +168,7 @@ export const nu_to_D = (nu) => {
 const _kepler_equation_prime_near_parabolic = (D, ecc) => {
   const x = (ecc - 1) / (ecc + 1) * (D ** 2);
   if (Math.abs(x) >= 1) throw new Error('abs(x) must be less than 1');
-  S = _dS_x_alt(ecc, x);
+  const S = _dS_x_alt(ecc, x);
   return Math.sqrt(2 / (1 + ecc)) + Math.sqrt(2 / (1 + ecc) ** 3) * (D ** 2) * S;
 };
 
@@ -192,7 +192,7 @@ const _dS_x_alt = (ecc, x, atol = 1e-12) => {
   let k = 0;
 
   while (true) {
-    S_old = S
+    const S_old = S
     S += (ecc - 1 / (2 * k + 3)) * (2 * k + 3) * x**k
     k += 1
 

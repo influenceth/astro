@@ -57,7 +57,7 @@ class Orbit {
 
   // Returns the period in seconds
   get period() {
-    return 2 * Math.PI * Math.sqrt(this.a ** 3 / this.mu);
+    return 2 * Math.PI * Math.sqrt(Math.abs(this.a) ** 3 / this.mu);
   }
 
   // Returns the orbital radius in km

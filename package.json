@@ -1,6 +1,6 @@
 {
   "name": "@influenceth/astro",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "Astrodynamics in Javascript",
   "type": "module",
   "module": "./build/index.js",
